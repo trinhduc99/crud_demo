@@ -1,56 +1,8 @@
 
 <?php
-            include "config.php";
-            $error = array();
-            $data = array();
-            $id= $_GET['id'];
-            if(isset($_POST['done'])){
-            
-            $data['list']= isset($_POST['list'])?$_POST['list']:"";
-
-            //Kiem tra dinh dang du lieu
-            require('./validate.php');
-            if(empty($data['list'])){
-                $error['list'] = " <script>
-                alert('Ban chua nhap ten');
-                </script>";
-            }
-            else if (!is_list($data['list'])){
-                $error['list'] = " <script>
-                alert('List chi bao gom chu va dau cach');
-                </script>";
-            }
-
-            // Lưu dữ liệu
-            if (!$error){
-                echo " <script>
-                    alert('update thanh cong');
-                    </script>";
-                $stmt = $con->prepare('UPDATE `todolist_table` SET `id`=?,`list`=? WHERE `id`=?');
-                $stmt->bindParam(1, $id);
-                $stmt->bindParam(2, $list);
-                $stmt->bindParam(3, $id);
-            
-            //Gán giá trị và thực thi
-            
-            $list= $data['list'];
-            $stmt->execute();
-            }
-            else{
-                
-                echo"<script>
-                alert('Dữ liệu bị lỗi, không thể lưu trữ');
-                </script>";
-            }
-
-              header('location:index.php');
-            }
-            
+            include "create.php";
 ?>
-<!-- code php validate du lieu -->
-<?php
 
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -172,7 +124,7 @@
             .addBtn:hover {
                 background-color: #bbb;
             }
-            .pagination a, .pagination span{
+        .pagination a, .pagination span{
         color:black;
         float:left;
         padding: 8px 16px;
@@ -189,12 +141,12 @@
         .pagination{
             text-aline:center;
         }
+        
     </style>
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 	<script src="main.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>My Simple To Do List</title>
     <!-- <script>
     function validateForm()
 {
@@ -203,31 +155,34 @@
         alert('Bạn chưa nhap todolist');
     }
     else{
-        alert('Update thành công');
+        alert('Insert thành công');
         return true;
     }
  
     return false;
 }</script> -->
+    <title>My Simple To Do List</title>
 </head>
+
 <body>
 <?php
     include "pation_page.php";
 ?>
-<div id="myDIV" class="header">
-  <h2>My To Do List</h2>
-<?php echo isset($error['list']) ? $error['list'] : ''; ?>
-  <!-- form -->
- <form action="" method="post" >
- <input type="text" name="list" id="myInput" value="<?=$_GET['list']; ?>" placeholder="Add your to here....">
-  <input type= "submit" name="done" value= "Add"  class="addBtn">
- </form><!-- End form -->
-</div>
+        <div id="myDIV" class="header">
+        <h2>My To Do List</h2>
+        <?php echo isset($error['list']) ? $error['list'] : ''; 
+         header('location:index.php');
+        ?>
+        <form action="" method="post" >
+        <input type="text" name="list" id="myInput" value="<?= isset($data['list']) ? $data['list'] : ''; ?>" placeholder="">
+        <input type= "submit" name="done" value= "Add"  class="addBtn">
+        </form>
+        </div>
 
-<ul id="myUL">
+<ul id="myUL" style= "" >
     <?php
     include "config.php";
-    $sql= $con->prepare(" SELECT * FROM  todolist_table order by id desc limit $start, $limit");
+    $sql= $con->prepare(" SELECT * FROM  todolist_table order by id desc limit $start, $limit ");
     $sql->execute();
     // $res = $sql->fetch(PDO::FETCH_ASSOC);
     // var_dump(is_int($res['id']));
@@ -253,7 +208,7 @@
         <?php
         }?>
 
-            <a href="update.php?id=<?= $res['id'];?>&&list=<?= $res['list']; ?>"><i class="fa fa-wrench" style="font-size:32px; float:right;"></i></a>
+            <a href="update.php?id=<?= $res['id'];?>"><i class="fa fa-wrench" style="font-size:32px; float:right;"></i></a>
             <a href="delete.php?id=<?= $res['id']; ?>"><i class="material-icons" style="font-size:32px; float:right;" >delete</i></a>
 
         </li>
@@ -297,3 +252,5 @@
         </div>
 </body>
 </html>
+
+

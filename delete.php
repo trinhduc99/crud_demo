@@ -3,7 +3,7 @@ include 'config.php';
 
 $id= $_GET['id'];
 
-$sql= "DELETE FROM `crud_table` WHERE id= $id";
+$sql= "DELETE FROM `todolist_table` WHERE id= $id";
 $con->exec($sql);
-header('location:display.php');
+header('location:index.php');
 ?>
